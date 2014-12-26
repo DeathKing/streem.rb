@@ -14,29 +14,38 @@ module Connectable
 
 
     attr_reader :name
-
-    attr_accessor :value
-    attr_accessor :producer, :customer
+    attr_reader :producer, :customer
     
     def initialize(producer, customer)
       # FIXME: typecheck
       @name = SecureRandom.base64(10)
-      @producer = producer
-      @customer = customer
-
-      producer.add_output_pipe(@name, self)
-      customer.add_input_pipe(@name, self)
+      @buffer = []
     end
 
     def |(target)
       # target only could be connectable
     end
 
-    def value=(val)
-      @value = val
-      @customer.trigger(@name)
+    def puts(val)
+      @buffer << val
+      @customer.trigger
     end
 
+    def gets
+      if @buffer.empty?
+        raise "Pipe empty!"
+      else
+        @buffer.shift
+      end
+    end
+
+    def empty?
+      @buffer.empty?
+    end
+
+    def ready?
+      not empty?
+    end
   end
 
 end
