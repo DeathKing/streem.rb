@@ -7,28 +7,21 @@ module Connectable
   class Pipe
 
     def self.find_by_name(name)
-      ObjectSpace.each_object(self).select do |obj|
-        obj.name == name
-      end.first
+      ObjectSpace.each_object(self).find {|obj| obj.name == name}
     end
-
 
     attr_reader :name
     attr_reader :producer, :customer
     
-    def initialize(producer, customer)
+    def initialize(producer, customer, name=nil)
       # FIXME: typecheck
-      @name = SecureRandom.base64(10)
+      @name = name.nil? ? SecureRandom.base64(10) : name
       @buffer = []
-    end
-
-    def |(target)
-      # target only could be connectable
     end
 
     def puts(val)
       @buffer << val
-      @customer.trigger
+      val
     end
 
     def gets
