@@ -1,13 +1,37 @@
 class Component
 
+  include Connectable
+
   @@tasks = []
 
   def initialize(agent)
-    raise "Agent must respond to call() method" unless agent.respond_to? :call
+    raise "Agent must respond to call method" unless agent.respond_to? :call
+    raise "Agent must respond to dead? method" unless agent.respond_to? :dead?
     @agent = agent
     @read_pipes = {}
     @write_pipes = {}
     @@tasks << self
+  end
+
+  def |(target)
+    if target.is_a?(Pipe)
+      customer = target.producer
+      producer = self
+      pipe = Pipe.new(customer, producer, pipe.name)
+    elsif target.is_a?(Component)
+      customer = target
+      producer = self
+      pipe = Pipe.new(customer, producer)
+    elsif target.is_a?(Connectable)
+      customer = Component.new(target)
+      producer = Component.new(self)
+      pipe = Pipe.new(customer, producer)
+    else
+      raise "Wrong connection with unexpect type of: #{target.class}"
+    end
+    customer.add_read_pipe(pipe)
+    producer.add_write_pipe(pipe)
+    pipe
   end
 
   def run
@@ -18,6 +42,10 @@ class Component
     ret = @agent.call(read_pipe.gets)
     write_pipe.puts(ret) if write_pipe
     ret
+  end
+
+  def boardcast(value)
+    @write_pipes.each_value {|p| p.puts(value)}
   end
 
   # ready?, blocked? and dead? should be refactored
@@ -38,16 +66,21 @@ class Component
     end
   end
 
+  # if @agent is dead, the component must be dead, and should be
+  # moved out from the schedule.
+  # if @agent wait for some input but there's no such read pipe
+  # that avaliavle, then it gose dead.
   def dead?
-    @agent.dead? || avaliable_read_pipes.empty?
+    @agent.dead? ||
+      (@agent.require_argument && avaliable_read_pipes.empty?)
   end
 
   def ready_read_pipes
-    @read_pipes.select {|p| p.ready?}
+    @read_pipes.each_value.select {|p| p.ready?}
   end
 
   def avaliable_read_pipes
-    @read_pipes.reject {|p| p.dead?}
+    @read_pipes.each_value.reject {|p| p.dead?}
   end
 
   def add_read_pipe(pipe)

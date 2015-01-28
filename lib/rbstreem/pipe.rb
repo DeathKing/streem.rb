@@ -6,6 +6,7 @@ module Connectable
   # Pipe must have a uniq name to deal with data flow
   class Pipe
 
+    # Find a specific piple
     def self.find_by_name(name)
       ObjectSpace.each_object(self).find {|obj| obj.name == name}
     end
@@ -16,24 +17,28 @@ module Connectable
     def initialize(producer, customer, name=nil)
       # FIXME: typecheck
       @name = name.nil? ? SecureRandom.base64(10) : name
-      @buffer = []
+      @queue = []
+      # producer and customer seems useless because a pipe never
+      # informe the customer once it gets ready.
+      @producer = producer
+      @customer = customer
     end
 
     def puts(val)
-      @buffer << val
+      @queue << val
       val
     end
 
     def gets
-      if @buffer.empty?
+      if @queue.empty?
         raise "Pipe empty!"
       else
-        @buffer.shift
+        @queue.shift
       end
     end
 
     def empty?
-      @buffer.empty?
+      @queue.empty?
     end
 
     def ready?
