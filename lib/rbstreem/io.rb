@@ -45,7 +45,7 @@ class StreemOut < StreemIO
   end
 
   def ready?
-    true
+    !ready_read_pipes.empty?
   end
 
   def blocked?
@@ -64,12 +64,14 @@ STDIN = StreemIn.new($stdin)
 STDOUT = StreemOut.new($stdout)
 
 def STDIN.run
+  puts "STDIN |-> ".blue
   ret = @source.gets
-  boardcast(ret)
+  broadcast(ret)
   ret
 end
 
 def STDOUT.run
+  puts "STDOUT |-> ".blue
   ret = ready_read_pipes.sample.gets
   @target.puts(ret)
   ret

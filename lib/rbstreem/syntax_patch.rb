@@ -20,6 +20,10 @@ class Proc
   def dead?
     false
   end
+
+  def require_argument
+    true
+  end
 end
 
 # Money patching
@@ -27,5 +31,8 @@ end
 class Array
   include Connectable
 
-  # Connectable Array should be blocked when it's empty
+  def call(x)
+    self
+  end
 end
+

@@ -5,11 +5,15 @@ module Connectable
     if target.is_a?(Pipe)
       customer = target.producer
       producer = Component.new(self)
-      pipe = Pipe.new(customer, producer, pipe.name)
+      pipe = Pipe.new(producer, customer, target.name)
+    elsif target.is_a?(Component)
+      customer = target
+      producer = Component.new(self)
+      pipe = Pipe.new(producer, customer)
     elsif target.is_a?(Connectable)
       customer = Component.new(target)
       producer = Component.new(self)
-      pipe = Pipe.new(customer, producer)
+      pipe = Pipe.new(producer, customer)
     else
       raise "Wrong connection with unexpect type of: #{target.class}"
     end
