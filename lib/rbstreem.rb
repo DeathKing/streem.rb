@@ -1,5 +1,4 @@
-require 'colored'
-
+require_relative 'rbstreem/version.rb'
 require_relative 'rbstreem/connectable.rb'
 require_relative 'rbstreem/component.rb'
 require_relative 'rbstreem/io.rb'

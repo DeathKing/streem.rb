@@ -1,4 +1,4 @@
-class Component
+class RbStreem::Component
   # instead of using a event loop, we use some of schedule
   # algorithm to switch between each component, to avoid
   # we stay in a data-flow too long.

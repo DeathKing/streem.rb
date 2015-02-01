@@ -4,14 +4,19 @@ Try to implement [matz/streem](https://github.com/matz/streem) as a DSL of Ruby 
 
 All this work based on [commit 8dba5e8](https://github.com/matz/streem/commit/8dba5e83e4a4e319e1ae4754a1aef455e12b411c).
 
+## Usage
+
+```
+$ ./streem.rb file/to/run.strm
+```
 
 ## Reference
 
 I will list the original paper or book, but I will also list the corresponding Chinese version.
 
-[Abl83] introduces a interesing system: **propagation of constraints(约束传播)** in **section 3.3.5**, which inspire me to develop the streem.rb. In the footnote of that page, we know "this idea first appeared in the incredibly forw-ard-looking SKETCHPAD system by Ivan Sutherland". But in that system constraints are equations, which means the computation can be act in two different direction. And that system is **nonpreemptive** and **signal senstive**, in other words, once some signal changes, all the equations have to re-computing to be banlanced through the 'constraint chains', that why it be called 'propagation'. Thus, we will stucked in a chain too long.
+[Abl83] introduces a interesting system: **propagation of constraints(约束传播)** in **section 3.3.5**, which inspire me to develop the streem.rb. In the footnote of that page, we know "this idea first appeared in the incredibly forward-looking SKETCHPAD system by Ivan Sutherland". But in that system constraints are equations, which means the computation can be act in two different direction. And that system is **nonpreemptive** and **signal sensitive**, in other words, once some signal changes, all the equations have to re-computing to be balanced through the 'constraint chains', that why it be called 'propagation'. Thus, we will be stuck in a chain too long.
 
-[Abl83] also encourages programmer implemnting features as a DSL in a host language, so that you can get the power of the host language as a extsion naturally. I think the syntax is not the most important matter now, so I ignore the syntax matter just implement the streem.rb in Ruby using some fantastic Ruby tricks.
+[Abl83] also encourages programmers implementing features as a DSL in a host language, so that you can get the power of the host language as an extension naturally. I think the syntax is not the most important matter now, so I ignore the syntax matter just implement the streem.rb in Ruby using some fantastic Ruby tricks.
 
 [Dan02] indicates that a Linux/UNIX pipe is a/two file descriptor(s) shared between two process(one for write, one for read) in chapter. 17.
 
@@ -23,7 +28,7 @@ Matz himself show a lot of interests in UNIX pipe, event-drive pattern(eventmach
 + [Dan02] Daniel P.Bovet, Marco Cesati. Understanding the Linux Kernel, O'Reilly Media. 2002.  
 + [Matz12] まつもと ゆきひろ. まつもとゆきひろ コードの未来. 2012. 
 
-## Corresponding Chinese Version
+### Corresponding Chinese Version
 
 + [Abl83.Zh_cn] [美] Abelson H, Sussman G J. 著, 裘宗燕 译, 计算机程序的构造和解释. 2004.
 + [Dan02.Zh_cn] [美] 博韦, 西斯特 著, 陈莉君, 张琼声, 张宏伟 译，深入理解LINUX内核, 中国电力出版社, 2007.

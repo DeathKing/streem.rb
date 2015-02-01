@@ -1,5 +1,5 @@
 # Interface
-module Connectable
+module RbStreem::Connectable
 
   def |(target)
     if target.is_a?(Pipe)

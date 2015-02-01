@@ -1,4 +1,4 @@
-class Component
+class RbStreem::Component
 
   include Connectable
 
@@ -16,8 +16,16 @@ class Component
     #   + dead?() with no argument, this is used in schedule algorithm to
     #     to determine whether a component has already been excuted and have to
     #     move it out
-    raise "Agent must implement call method" unless agent.respond_to? :call
-    raise "Agent must implement dead? method" unless agent.respond_to? :dead?
+    #   + is_producer?() with no argument, this is used to determine whether a
+    #     component could yield some computation result
+    #   + is_customer?() with no arugment, this is used to determine whether a
+    #     component depend on data from up-stream
+    %w{call dead? is_producer? is_customer?}.each do |name|
+      unless agent.respond_to? name
+        raise "Agent must implement #{name} method."
+      end
+    end
+
     @agent = agent
     @read_pipes = {}
     @write_pipes = {}
@@ -120,7 +128,7 @@ class Component
   # that avaliavle, then it gose dead.
   def dead?
     @agent.dead? ||
-      (@agent.require_argument && avaliable_read_pipes.empty?)
+      (!@agent.is_producer? && avaliable_read_pipes.empty?)
   end
 
   def ready_read_pipes

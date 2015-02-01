@@ -1,7 +1,7 @@
 require 'securerandom'
 
 # Pipe in streem.rb always be single direction!
-module Connectable
+module RbStreem
   class Pipe
 
     # Find a specific piple

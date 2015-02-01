@@ -12,41 +12,19 @@ module RbStreem
       result
     end
 
-    def require_argument
-    end
-
     def call
       shift!
     end
 
-  end
-
-  class Sequence < Stream
-    def initialize(to, start=0, step=1)
-      @to = to
-      @step = step
-      @value = start
+    def is_producer?
+      true
     end
 
-    def ready?
-      !dead?
-    end
-
-    def require_arugment
+    def is_customer?
       false
     end
-
-    def dead?
-      end_of_sequence?
-    end
-
-    def end_of_sequence?
-      op = [:==, :>, :<]
-      @value.send(op[@step <=> 0], @to)
-    end
-
-    def transform_to_next
-      @value += @step
-    end
+    
   end
 end
+
+require_relative 'stream/sequence.rb'
