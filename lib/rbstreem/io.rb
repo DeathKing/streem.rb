@@ -64,14 +64,18 @@ STDIN = StreemIn.new($stdin)
 STDOUT = StreemOut.new($stdout)
 
 def STDIN.run
-  puts "STDIN |-> ".blue
+  # FIXME: this piece of code should extract out from here.
+  puts "STDIN: Please input some text here |->".blue
+
   ret = @source.gets
   broadcast(ret)
   ret
 end
 
 def STDOUT.run
-  puts "STDOUT |-> ".blue
+  # FIXME: this piece of code should extract out from here.
+  puts "STDOUT |->".blue
+
   ret = ready_read_pipes.sample.gets
   @target.puts(ret)
   ret

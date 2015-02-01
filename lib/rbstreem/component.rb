@@ -9,14 +9,15 @@ class Component
   attr_reader :write_pipes
 
   def initialize(agent)
-    # Constrain Checks
-    # Agent must implement following protocol:
+    # Contract Checks
+    # Agent is the actuall code to be excuted when a component running. An
+    # agent must implement following interfaces:
     #   + call() with single argument, this is used when a component been run()
     #   + dead?() with no argument, this is used in schedule algorithm to
     #     to determine whether a component has already been excuted and have to
     #     move it out
-    raise "Agent must respond to call method" unless agent.respond_to? :call
-    raise "Agent must respond to dead? method" unless agent.respond_to? :dead?
+    raise "Agent must implement call method" unless agent.respond_to? :call
+    raise "Agent must implement dead? method" unless agent.respond_to? :dead?
     @agent = agent
     @read_pipes = {}
     @write_pipes = {}
@@ -45,15 +46,15 @@ class Component
 
   def |(target)
     if target.is_a?(Pipe)
-      # if a component is going to connenct to a pipe, that must be this
-      # situation:
+      # If a component is going to connenct to a pipe, that must happen in such
+      # a situation:
       #    +------------------------------------------+
       #    | com1.| A.| B   =====>   (com1.| (A.| B)) |
       #    +------------------------------------------+
-      # cause whatever A and B (of course, the must respond_to the | method),
-      # `A.| B` always returns a pipe, so if com1 connect to that pipe, it
-      # means com1 want to connect to the producer of that pipe which is A
-      # this a trick to implement a long pipe in Ruby.
+      # Cause whatever A and B is (of course, they must respond_to the :|
+      # method) `A.| B` always returns a pipe, so if com1 connect to that pipe,
+      # it means com1 want to connect to the producer of that pipe which is A.
+      # this a trick to implement a long pipe in Ruby due to right-association.
       customer = target.producer
       producer = self
       pipe = Pipe.new(producer, customer, target.name)
@@ -75,8 +76,11 @@ class Component
     pipe
   end
 
+  # This method been called if only if the component is ready and been select
+  # out by the scheduler.
   def run
-    # FIXME: take a sample may not be a good schedule algorithm
+    # FIXME
+    #   Take a sample may not be a good schedule algorithm.
     read_pipe = ready_read_pipes.sample
     write_pipe = @write_pipes[read_pipe.name]
     result = @agent.call(read_pipe.gets)
@@ -91,6 +95,8 @@ class Component
   # ready?, blocked? and dead? should be refactored
 
   def ready?
+    # no read_pipes means the component is a producer, it's ready only depend
+    # on the agent's state
     if @read_pipes.empty?
       @agent.ready?
     else
@@ -98,6 +104,8 @@ class Component
     end
   end
 
+  # In this version, it seems that blocked? has no sense, I just put it here to
+  # make streem.rb more like a OS, maybe.
   def blocked?
     if @read_pipes.emtpy?
       @agent.blocked?

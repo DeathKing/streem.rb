@@ -6,7 +6,7 @@ module RbStreem
     end
 
     def shift!
-      return Fail.new if dead?
+      return Fail.new("Stream already end.") if dead?
       result = @value
       transform_to_next
       result
