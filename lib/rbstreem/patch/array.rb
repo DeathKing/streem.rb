@@ -9,6 +9,14 @@ class Array
     true
   end
 
+  def dead?
+    false
+  end
+
+  def ready?
+    true
+  end
+
   def call(x)
     self
   end

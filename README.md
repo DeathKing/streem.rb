@@ -1,8 +1,8 @@
 # streem.rb / RbStreem
 
-Try to implement [matz/streem](https://github.com/matz/streem) as a DSL of Ruby with a little syntax sacrifice.
+Try to implement [matz/streem](https://github.com/matz/streem) as a DSL within Ruby with a little syntax sacrifice.
 
-All this work based on [commit 8dba5e8](https://github.com/matz/streem/commit/8dba5e83e4a4e319e1ae4754a1aef455e12b411c).
+All of this work are based on [commit 8dba5e8](https://github.com/matz/streem/commit/8dba5e83e4a4e319e1ae4754a1aef455e12b411c).
 
 ## Usage
 
@@ -12,15 +12,15 @@ $ ./streem.rb file/to/run.strm
 
 ## Reference
 
-I will list the original paper or book, but I will also list the corresponding Chinese version.
+I will list the original papers and books, but I will also list the corresponding Chinese version.
 
-[Abl83] introduces a interesting system: **propagation of constraints(约束传播)** in **section 3.3.5**, which inspire me to develop the streem.rb. In the footnote of that page, we know "this idea first appeared in the incredibly forward-looking SKETCHPAD system by Ivan Sutherland". But in that system constraints are equations, which means the computation can be act in two different direction. And that system is **nonpreemptive** and **signal sensitive**, in other words, once some signal changes, all the equations have to re-computing to be balanced through the 'constraint chains', that why it be called 'propagation'. Thus, we will be stuck in a chain too long.
+[Abl83] introduced a interesting system: **propagation of constraints(约束传播)** in section 3.3.5, which inspire me to develop the streem.rb. In the footnote of that page, we know "this idea first appeared in the incredibly forward-looking SKETCHPAD system by Ivan Sutherland". Since in that system constraints are equations, which means the computation can be act in two different direction, but streem.rb has a distinguish direction: from a source to a destination. And that system is **nonpreemptive** and **signal sensitive**, in other words, once some signal changes, all the equations have to re-computing to be balanced through the 'constraint chains', that why it be called 'propagation'. Thus, we will be stuck in a chain too long.
 
-[Abl83] also encourages programmers implementing features as a DSL in a host language, so that you can get the power of the host language as an extension naturally. I think the syntax is not the most important matter now, so I ignore the syntax matter just implement the streem.rb in Ruby using some fantastic Ruby tricks.
+[Abl83] also encourages programmers implementing features as a DSL in a host language, so that you can get the power of the host language as an extension naturally. I think the syntax is not the most important matter now, so I ignore the syntax matter and just implement the streem.rb in Ruby using some fantastic Ruby tricks.
 
-[Dan02] indicates that a Linux/UNIX pipe is a/two file descriptor(s) shared between two process(one for write, one for read) in chapter. 17.
+[Dan02] shows that a Linux/UNIX pipe is a/two file descriptor(s) shared between two processes(one for write, one for read) in chapter #17.
 
-Matz himself show a lot of interests in UNIX pipe, event-drive pattern(eventmachine), asynchronous IO, non-block IO and stream in [Matz12], and also inspire me a lot.
+Matz himself developed a consuming passion in UNIX pipe, event-drive pattern(eventmachine), asynchronous IO, non-block IO and stream in [Matz12] by analyzing serveral programming languages and useful libraries. [Matz12] gives me a general idea of what the streem.rb should act like.
 
 ### Original Version
 

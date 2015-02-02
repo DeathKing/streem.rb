@@ -1,0 +1,16 @@
+class Student
+  def initialize(name, age)
+  	@age = age
+  	@name = name
+  end
+end
+
+studentlize = -> str {
+	Student.new(*str.split(","))
+}
+
+file("student.csv").
+  | each_line.
+  | chomp.
+  | studentlize.
+  | STDOUT

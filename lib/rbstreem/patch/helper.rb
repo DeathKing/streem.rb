@@ -2,24 +2,35 @@ require 'colored'
 
 module Kernel
 
-  SKIP_INSTANCE = SkipClass.new
+
+  def make_agent(method)
+    -> obj { obj.send(method) }
+  end
+
+  def chomps
+    make_agent(:chomp)
+  end
+
+  Colored::COLORS.each_key do |color|
+    define_method(color) do
+      make_agent(color)
+    end
+  end
+
+  SKIP_INSTANCE = RbStreem::SkipClass.new
 
   def skip
     SKIP_INSTANCE
   end
 
   def seq(*arg)
-    Sequence.new(*arg)
+    RbStreem::Sequence.new(*arg)
   end
 
   def Component(agent)
     RbStreem::Component.new(agent)
   end
 
-  Colored::COLORS.each_key do |color|
-    define_method(color) do
-      -> str { str.send(color) }
-    end
-  end
+
 
 end

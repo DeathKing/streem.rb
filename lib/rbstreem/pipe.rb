@@ -4,7 +4,7 @@ require 'securerandom'
 module RbStreem
   class Pipe
 
-    # Find a specific piple
+    # Find a specific pipe
     def self.find_by_name(name)
       ObjectSpace.each_object(self).find {|obj| obj.name == name}
     end
@@ -12,16 +12,16 @@ module RbStreem
     attr_reader :name
     attr_reader :producer, :customer
     
-    
-    def initialize(producer, customer, name=nil)
+    def initialize(src, dest, name=nil)
       # FIXME: typecheck
       # Pipe must have a uniq name to deal with data flow
-      @name = name.nil? ? SecureRandom.base64(10) : name
+      name = dest.is_a?(Pipe) ? dest.name : name
+      @name = name.nil? ? SecureRandom.base64(9) : name
       @queue = []
       # producer and customer seems useless because a pipe never
       # informe the customer once it gets ready.
-      @producer = producer
-      @customer = customer
+      @producer = Component.build(src)
+      @customer = Component.build(dest)
       @died = false
     end
 

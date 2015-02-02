@@ -1,5 +1,5 @@
 class Proc
-  include Connectable
+  include RbStreem::Connectable
 
   # Proc always ready because it just wait on the argument
   # to call him.
@@ -17,7 +17,12 @@ class Proc
     false
   end
 
-  def require_argument
+  def is_producer?
     true
   end
+
+  def is_customer?
+    true
+  end
+
 end

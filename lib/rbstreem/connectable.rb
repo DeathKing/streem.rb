@@ -2,6 +2,10 @@
 module RbStreem::Connectable
 
   def |(target)
+
+    pipe = Pipe.new(self, target)
+
+
     if target.is_a?(Pipe)
       customer = target.producer
       producer = Component.new(self)

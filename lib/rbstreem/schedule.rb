@@ -3,7 +3,6 @@ class RbStreem::Component
   # algorithm to switch between each component, to avoid
   # we stay in a data-flow too long.
   def self.start_schedule
-    puts "start schedule"
     until @@tasks.empty?
       ready_queue = @@tasks.select(&:ready?)
       ready_queue.each do |com|
