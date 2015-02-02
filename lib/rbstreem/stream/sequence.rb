@@ -1,9 +1,7 @@
 module RbStreem
   class Sequence < Stream
-    def initialize(to, start=0, step=1)
-      @to = to
-      @step = step
-      @value = start
+    def initialize(to, start = 1, step = 1)
+      @to, @step, @value = to, step, start
     end
 
     def ready?

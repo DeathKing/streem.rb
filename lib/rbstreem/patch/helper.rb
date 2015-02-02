@@ -2,7 +2,6 @@ require 'colored'
 
 module Kernel
 
-
   def make_agent(method)
     -> obj { obj.send(method) }
   end
@@ -30,7 +29,5 @@ module Kernel
   def Component(agent)
     RbStreem::Component.new(agent)
   end
-
-
 
 end

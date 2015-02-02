@@ -1,11 +1,11 @@
 class Array
   include Connectable
 
-  def is_customer?
+  def customer?
     false
   end
 
-  def is_producer?
+  def producer?
     true
   end
 
@@ -17,7 +17,7 @@ class Array
     true
   end
 
-  def call(x)
+  def call(_)
     self
   end
 end

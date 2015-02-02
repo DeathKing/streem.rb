@@ -1,27 +1,27 @@
 # Build a counter closure
-lineno_counter = -> filename {
-	lineno = 0
-	-> str {
-		lineno += 1
-		"[#{filename}:#{lineno}] #{str}"
-	}
-}
+lineno_counter = lambda do |filename|
+  lineno = 0
+  lambda do |str|
+    lineno += 1
+    "[#{filename}:#{lineno}] #{str}"
+  end
+end
 
-find = -> patten, color {
-	-> str {
-		if str.gsub!(patten) {|match| match.send(color)}
-			str
-		else
-			skip
-		end
-	}
-}
+find = lambda do |patten, color|
+  lambda do |str|
+    if str.gsub!(patten) {|match| match.send(color)}
+      str
+    else
+      skip
+    end
+  end
+end
 
 Dir.glob("*.txt") do |filename|
-	file(filename).
-		| each_line.
-		| chomps.
-		| lineno_counter(filename).
-		| find(ARGV[0], :red).
-		| STDOUT
+  file(filename).
+    | line_io.
+    | chomps.
+    | lineno_counter(filename).
+    | find(ARGV[0], :red).
+    | STDOUT
 end

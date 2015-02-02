@@ -5,12 +5,12 @@ class Student
   end
 end
 
-studentlize = -> str {
+studentlize = lambda do |str|
 	Student.new(*str.split(","))
-}
+end
 
 file("student.csv").
-  | each_line.
+  | line_io.
   | chomp.
   | studentlize.
   | STDOUT

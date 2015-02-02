@@ -9,13 +9,9 @@ class RbStreem::Component
   attr_reader :write_pipes
 
   def self.build(obj)
-    case obj.class
-    when Component
-      self
-    when Pipe
-      obj.customer
-    else
-      component.new(obj)
+    if obj.is_a?(Component) then self
+    elsif obj.is_a?(Pipe)   then obj.customer
+    else Component.new(obj)
     end
   end
 

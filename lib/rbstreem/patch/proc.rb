@@ -17,11 +17,11 @@ class Proc
     false
   end
 
-  def is_producer?
+  def producer?
     true
   end
 
-  def is_customer?
+  def customer?
     true
   end
 

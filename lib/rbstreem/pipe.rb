@@ -2,6 +2,7 @@ require 'securerandom'
 
 # Pipe in streem.rb always be single direction!
 module RbStreem
+
   class Pipe
 
     # Find a specific pipe
@@ -22,7 +23,13 @@ module RbStreem
       # informe the customer once it gets ready.
       @producer = Component.build(src)
       @customer = Component.build(dest)
-      @died = false
+
+      @producer.add_write_pipe(self)
+      @customer.add_read_pipe(self)
+    end
+
+    def dead?
+      @customer.nil? || ((@producer.nil? || @producer.dead?) && empty?)
     end
 
     def puts(val)
@@ -30,17 +37,8 @@ module RbStreem
       val
     end
 
-    # kill the component
-    def kill
-      @died = true
-    end
-
     def gets
-      if @queue.empty?
-        raise "Pipe empty!"
-      else
-        @queue.shift
-      end
+      @queue.empty? ? fail("Pipe empty!") : @queue.shift
     end
 
     def head
@@ -52,12 +50,9 @@ module RbStreem
     end
 
     def ready?
-      not empty?
+      !empty?
     end
 
-    def died?
-      @died
-    end
   end
 
 end

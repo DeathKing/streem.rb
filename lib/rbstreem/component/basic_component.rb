@@ -1,7 +1,5 @@
 module RbStreem
-
   class BasicComponent < Component
-
     def initialize(agent)
       # Contract Checks
       # Agent is the actuall code to be excuted when a component running. An
@@ -12,11 +10,11 @@ module RbStreem
       #     move it out
       #   + ready?() with no argument, this is used to determine the agent is
       #     ready to run
-      #   + is_producer?() with no argument, this is used to determine whether a
+      #   + producer?() with no argument, this is used to determine whether a
       #     component could yield some computation result
-      #   + is_customer?() with no arugment, this is used to determine whether a
+      #   + customer?() with no arugment, this is used to determine whether a
       #     component depend on data from up-stream
-      %w{call dead? ready? is_producer? is_customer?}.each do |name|
+      %w{call dead? ready? producer? customer?}.each do |name|
         unless agent.respond_to? name
           raise "Agent must implement #{name} method."
         end
@@ -29,56 +27,8 @@ module RbStreem
       @@tasks << self
     end
 
-
     def name
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
-    end
-
-    def inspect
-      header = "#{name}\n"
-
-      pipe_for_read = "Pipes for read ----------------------------------------------\n"
-      @read_pipes.each_value do |p|
-        pipe_for_read << sprintf("%18s %10s %20s\n", p.name, p.head.inspect, p.customer.name)
-      end
-      pipe_for_write = "Pipes for write ---------------------------------------------\n"
-      @write_pipes.each_value do |p|
-        pipe_for_write << sprintf("%18s %10s %20s\n", p.name, p.head.inspect, p.customer.name)
-      end
-
-      header + pipe_for_read + pipe_for_write
-    end
-
-    def |(target)
-      if target.is_a?(Pipe)
-        # If a component is going to connenct to a pipe, that must happen in such
-        # a situation:
-        #    +------------------------------------------+
-        #    | com1.| A.| B   =====>   (com1.| (A.| B)) |
-        #    +------------------------------------------+
-        # Cause whatever A and B is (of course, they must respond_to the :|
-        # method) `A.| B` always returns a pipe, so if com1 connect to that pipe,
-        # it means com1 want to connect to the producer of that pipe which is A.
-        # this a trick to implement a long pipe in Ruby due to right-association.
-        customer = target.producer
-        producer = self
-        pipe = Pipe.new(producer, customer, target.name)
-      elsif target.is_a?(Component)
-        customer = target
-        producer = self
-        pipe = Pipe.new(producer, customer)
-      elsif target.is_a?(Connectable)
-        # target is the agent(means the actually code to run), so we have to
-        # wrap it up to make it be scheduled
-        customer = Component.new(target)
-        producer = self
-        pipe = Pipe.new(producer, customer)
-      else
-        raise "Wrong connection with unexpect type of: #{target.class}"
-      end
-      customer.add_read_pipe(pipe)
-      producer.add_write_pipe(pipe)
-      pipe
     end
 
     # This method been called if only if the component is ready and been select
