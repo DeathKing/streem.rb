@@ -1,0 +1,1 @@
+[red, blue, yellow, green].each { |colorize| STDIN.| colorize.| STDOUT }

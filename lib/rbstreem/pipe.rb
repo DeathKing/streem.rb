@@ -5,6 +5,8 @@ module RbStreem
 
   class Pipe
 
+    include Connectable
+
     # Find a specific pipe
     def self.find_by_name(name)
       ObjectSpace.each_object(self).find {|obj| obj.name == name}
@@ -23,9 +25,12 @@ module RbStreem
       # informe the customer once it gets ready.
       @producer = Component.build(src)
       @customer = Component.build(dest)
-
       @producer.add_write_pipe(self)
       @customer.add_read_pipe(self)
+    end
+
+    def |(other)
+      Pipe.new(self, other)
     end
 
     def dead?

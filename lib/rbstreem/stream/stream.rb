@@ -1,6 +1,8 @@
 module RbStreem
   class Stream
 
+    include Connectable
+
     def initialize
       @value = nil
     end
@@ -12,7 +14,7 @@ module RbStreem
       result
     end
 
-    def call
+    def call(_ = nil)
       shift!
     end
 

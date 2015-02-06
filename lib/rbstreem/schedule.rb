@@ -4,6 +4,8 @@ module RbStreem
     # algorithm to switch between each component, to avoid
     # we stay in a data-flow too long.
     def self.start_schedule
+      STDIN.write_pipes.empty? && @@tasks.delete(STDIN)
+      #STDOUT.read_pipes.empty? && @@task.delete(STDOUT)
       until @@tasks.empty?
         ready_queue = @@tasks.select(&:ready?)
         ready_queue.each do |component|
@@ -11,7 +13,7 @@ module RbStreem
           # the run method should not run too long and must yield
           # after it is done
           component.run
-          component.dead? && @@tasks.delete(component)
+          #component.dead? && @@tasks.delete(component)
         end
       end
     end

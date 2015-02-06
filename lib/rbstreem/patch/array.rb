@@ -1,5 +1,5 @@
 class Array
-  include Connectable
+  include RbStreem::Connectable
 
   def customer?
     false

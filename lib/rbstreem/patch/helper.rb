@@ -10,6 +10,10 @@ module Kernel
     make_agent(:chomp)
   end
 
+  def wait(sec = 1)
+    -> val { sleep(sec) && val }
+  end
+
   Colored::COLORS.each_key do |color|
     define_method(color) do
       make_agent(color)
@@ -23,11 +27,15 @@ module Kernel
   end
 
   def seq(*arg)
-    RbStreem::Sequence.new(*arg)
+    ProducerComponent(RbStreem::Sequence.new(*arg))
   end
 
   def Component(agent)
     RbStreem::Component.new(agent)
+  end
+
+  def ProducerComponent(agent)
+    RbStreem::ProducerComponent.new(agent)
   end
 
 end

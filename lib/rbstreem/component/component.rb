@@ -1,5 +1,21 @@
 module RbStreem
-  class BasicComponent < Component
+  class Component
+
+    include Connectable
+
+    # This is schedule queue
+    @@tasks = []
+
+    attr_reader :read_pipes
+    attr_reader :write_pipes
+
+    def self.build(obj)
+      if obj.is_a?(Component) then obj
+      elsif obj.is_a?(Pipe)   then obj.producer
+      else Component.new(obj)
+      end
+    end
+
     def initialize(agent)
       # Contract Checks
       # Agent is the actuall code to be excuted when a component running. An
@@ -31,6 +47,10 @@ module RbStreem
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
+    def |(other)
+      Pipe.new(self, other)
+    end
+
     # This method been called if only if the component is ready and been select
     # out by the scheduler.
     def run
@@ -44,7 +64,7 @@ module RbStreem
     end
 
     def broadcast(value)
-      @write_pipes.each_value {|p| p.puts(value)}
+      @write_pipes.each_value { |p| p.puts(value) }
     end
 
     # ready?, blocked? and dead? should be refactored
@@ -79,11 +99,11 @@ module RbStreem
     end
 
     def ready_read_pipes
-      @read_pipes.each_value.select {|p| p.ready?}
+      @read_pipes.each_value.select { |p| p.ready? }
     end
 
     def avaliable_read_pipes
-      @read_pipes.each_value.reject {|p| p.dead?}
+      @read_pipes.each_value.reject { |p| p.dead? }
     end
 
     def add_read_pipe(pipe)
@@ -108,5 +128,4 @@ module RbStreem
     end
 
   end
-
 end

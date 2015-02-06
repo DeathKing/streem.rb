@@ -36,7 +36,7 @@ module RbStreem
     end
 
     def ready?
-      true
+      !ready_read_pipes.empty?
     end
 
     def blocked?
@@ -44,7 +44,7 @@ module RbStreem
     end
 
     def dead?
-      false
+      @target.eof?
     end
 
   end
@@ -52,12 +52,12 @@ end
 
 # Noticed!
 # Override Ruby's default STDIN and STDOUT
-STDIN = StreemIn.new($stdin)
-STDOUT = StreemOut.new($stdout)
+STDIN = RbStreem::StreemIn.new($stdin)
+STDOUT = RbStreem::StreemOut.new($stdout)
 
 def STDIN.run
   ret = @source.gets
-  boardcast(ret)
+  broadcast(ret)
   ret
 end
 
