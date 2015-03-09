@@ -5,10 +5,10 @@ module RbStreem
     # we stay in a data-flow too long.
     def self.start_schedule
       STDIN.write_pipes.empty? && @@tasks.delete(STDIN)
-      #STDOUT.read_pipes.empty? && @@task.delete(STDOUT)
       until @@tasks.empty?
         ready_queue = @@tasks.select(&:ready?)
-        ready_queue.each do |component|
+        schedule_queue = ready_queue.sample(rand(ready_queue.length))
+        schedule_queue.each do |component|
           # FIXME: some preemptive schedule algorithm support here
           # the run method should not run too long and must yield
           # after it is done
