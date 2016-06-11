@@ -1,4 +1,4 @@
-class Array
+class ArrayContainer < Array
   include RbStreem::Connectable
 
   def customer?

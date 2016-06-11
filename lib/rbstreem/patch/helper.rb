@@ -1,6 +1,6 @@
 require 'colored'
 
-module Kernel
+module StreemHelper
 
   def make_agent(method)
     -> obj { obj.send(method) }
@@ -38,4 +38,15 @@ module Kernel
     RbStreem::ProducerComponent.new(agent)
   end
 
+  def def_combinator(name, blk)
+  end
+
+  def require_strm(strm_file)
+    require strm_file
+  end
+
+end
+
+module Kernel
+  include StreemHelper
 end

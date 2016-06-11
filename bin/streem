@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require 'rbstreem'
+
+at_exit do
+  if ARGV.empty?
+    puts "Usage: streem path/to/file"
+  else
+    ARGV.each {|file| require File.expand_path(file, Dir.pwd)}
+    RbStreem::Component.start_schedule
+  end
+end

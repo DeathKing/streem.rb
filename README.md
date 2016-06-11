@@ -7,16 +7,16 @@ All of this work are based on [commit 8dba5e8](https://github.com/matz/streem/co
 ## Usage
 
 ```
-$ ruby file/to/run.strm
+$ streem file/to/run.strm
 ```
 
 ## Reference
 
 I will list the original papers and books, but I will also list the corresponding Chinese version.
 
-[Abel83] introduced a interesting system **propagation of constraints(约束传播)** in section 3.3.5, which inspire me to develop the streem.rb. In the footnote of that page, we know that"this idea first appeared in the incredibly forward-looking SKETCHPAD system by Ivan Sutherland". Sinceconstraints are equations in that system, which means the computation can be performed in two different direction, but streem.rb has a distinguish direction: from a source to a destination. And that system is **nonpreemptive** and **signal sensitive**, in other words, once some signal changes, all the equations have to re-computing to be balanced through the 'constraint chains', that why it be called 'propagation'. Thus, we will be stuck in a chain too long.
+[Abel83] introduced a interesting system **propagation of constraints(约束传播)** in section 3.3.5, which inspire me to develop the streem.rb. In the footnote of that page, we know that"this idea first appeared in the incredibly forward-looking SKETCHPAD system by Ivan Sutherland". Since constraints are equations in that system, which means the computation can be performed in two different direction, but streem.rb has a distinguish direction: from a source to a destination. And that system is **nonpreemptive** and **signal sensitive**, in other words, once some signal changes, all the equations have to re-computing to be balanced through the 'constraint chains', that why it be called 'propagation'. Thus, we will be stuck in a chain too long.
 
-[Hoare]
+[Hoare85].
 
 [Abel83] also encourages programmers implementing features as a DSL in a host language, so that you can get the power of the host language as an extension naturally. I think the syntax is not the most important matter now, so I ignore the syntax matter and just implement the streem.rb in Ruby using some fantastic Ruby tricks.
 

@@ -7,9 +7,17 @@ lineno_counter = lambda do |filename|
   end
 end
 
-find = lambda do |patten, color|
+# find combinator
+# find = λpattern.λcolor.λstr.
+#          if pattern occurs in str
+#          then
+#              replace ∀pattern with color(str)
+#              return str
+#          else
+#              return skip
+def_combinator :find do |pattern, color|
   lambda do |str|
-    if str.gsub!(patten) {|match| match.send(color)}
+    if str.gsub!(pattern) {|match| match.send(color)}
       str
     else
       skip

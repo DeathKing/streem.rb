@@ -9,12 +9,6 @@ module RbStreem
     attr_reader :read_pipes
     attr_reader :write_pipes
 
-    def self.build(obj)
-      if obj.is_a?(Component) then obj
-      elsif obj.is_a?(Pipe)   then obj.producer
-      else Component.new(obj)
-      end
-    end
 
     def initialize(agent)
       # Contract Checks
@@ -39,16 +33,24 @@ module RbStreem
       @agent = agent
       @read_pipes = {}
       @write_pipes = {}
-      # Add self to sechdule queue
-      @@tasks << self
+
+      add_to_task_queue(self)
     end
 
     def name
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
-    def |(other)
-      Pipe.new(self, other)
+    # def |(other)
+    #   Pipe.new(self, other)
+    # end
+
+    def connection_target
+      self
+    end
+
+    def connection_source
+      self
     end
 
     # This method been called if only if the component is ready and been select
@@ -82,7 +84,7 @@ module RbStreem
     # In this version, it seems that blocked? has no sense, I just put it here to
     # make streem.rb more like a OS, maybe.
     def blocked?
-      if @read_pipes.emtpy?
+      if @read_pipes.empty?
         @agent.blocked?
       else
         @agent.blocked? && ready_read_pipes.empty?
@@ -92,7 +94,7 @@ module RbStreem
     # if @agent is dead, the component must be dead, and should be
     # moved out from the schedule.
     # if @agent wait for some input but there's no such read pipe
-    # that avaliavle, then it gose dead.
+    # that available, then it goes to dead.
     def dead?
       @agent.dead? ||
         (!@agent.is_producer? && avaliable_read_pipes.empty?)
@@ -125,6 +127,14 @@ module RbStreem
     def remove_pipe(name)
       remove_read_pipe(name)
       remove_write_pipe(name)
+    end
+
+    def task_queue
+      @@tasks
+    end
+
+    def add_to_task_queue(comp)
+      @@tasks << comp
     end
 
   end
