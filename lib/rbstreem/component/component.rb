@@ -41,10 +41,6 @@ module RbStreem
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
     end
 
-    # def |(other)
-    #   Pipe.new(self, other)
-    # end
-
     def connection_target
       self
     end
@@ -56,12 +52,10 @@ module RbStreem
     # This method been called if only if the component is ready and been select
     # out by the scheduler.
     def run
-      # FIXME
-      #   Take a sample may not be a good schedule algorithm.
+      # FIXME: Take a sample may not be a good schedule algorithm.
       read_pipe = ready_read_pipes.sample
-      write_pipe = @write_pipes[read_pipe.name]
       result = @agent.call(read_pipe.gets)
-      write_pipe.puts(result) if write_pipe && !result.is_a?(SkipClass)
+      broadcast(result) unless result.is_a? SkipClass
       result
     end
 
@@ -97,7 +91,7 @@ module RbStreem
     # that available, then it goes to dead.
     def dead?
       @agent.dead? ||
-        (!@agent.is_producer? && avaliable_read_pipes.empty?)
+        (!@agent.producer? && avaliable_read_pipes.empty?)
     end
 
     def ready_read_pipes
@@ -127,6 +121,10 @@ module RbStreem
     def remove_pipe(name)
       remove_read_pipe(name)
       remove_write_pipe(name)
+    end
+
+    def self.task_queue
+      @@tasks
     end
 
     def task_queue

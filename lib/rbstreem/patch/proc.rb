@@ -1,6 +1,4 @@
 class Proc
-  include RbStreem::Connectable
-
   # Proc always ready because it just wait on the argument
   # to call him.
   def ready?

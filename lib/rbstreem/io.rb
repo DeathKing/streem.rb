@@ -4,6 +4,7 @@ module RbStreem
     def initialize
       @read_pipes = {}
       @write_pipes = {}
+
       add_to_task_queue(self)
     end
   end
@@ -25,7 +26,7 @@ module RbStreem
     end
 
     def dead?
-      @source.eof?
+      false
     end
   end
 
@@ -44,7 +45,7 @@ module RbStreem
     end
 
     def dead?
-      @target.eof?
+      read_pipes.each_value.all? {|p| p.broken?}
     end
 
   end

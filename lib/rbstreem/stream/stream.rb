@@ -1,8 +1,6 @@
 module RbStreem
   class Stream
 
-    include Connectable
-
     def initialize
       @value = nil
     end

@@ -11,7 +11,7 @@ module StreemHelper
   end
 
   def wait(sec = 1)
-    -> val { sleep(sec) && val }
+   Component -> val { sleep(sec) && val }
   end
 
   Colored::COLORS.each_key do |color|
@@ -26,8 +26,12 @@ module StreemHelper
     SKIP_INSTANCE
   end
 
+  def stringfy
+    Component make_agent(:to_s)
+  end
+
   def seq(*arg)
-    ProducerComponent(RbStreem::Sequence.new(*arg))
+    ProducerComponent RbStreem::Sequence.new(*arg)
   end
 
   def Component(agent)

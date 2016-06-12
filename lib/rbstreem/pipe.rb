@@ -12,12 +12,12 @@ module RbStreem
 
     attr_reader :name
     attr_reader :producer, :customer
-    
-    def initialize(src, dest, name=nil)
-      # FIXME: typecheck
-      # Pipe must have a uniq name to deal with data flow
-      name = dest.is_a?(Pipe) ? dest.name : name
-      @name = name.nil? ? SecureRandom.base64(9) : name
+
+    attr_accessor :tag
+
+    def initialize(src, dest, tag=nil)
+      @tag = tag.nil? ? SecureRandom.base64(9) : tag
+      @name = SecureRandom.base64(9)
       @queue = []
       @producer = src
       @customer = dest
@@ -25,7 +25,7 @@ module RbStreem
       @customer.add_read_pipe(self)
     end
 
-    def dead?
+    def broken?
       @customer.nil? || ((@producer.nil? || @producer.dead?) && empty?)
     end
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rbstreem'
+include Kernel
 
 at_exit do
   if ARGV.empty?
