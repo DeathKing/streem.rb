@@ -1,0 +1,5 @@
+TODO
+
+* implementing `require_strm` method to load and evaluate any file end with `.strm` suffix.
+* some instrument tools or playground for debug RbStreem program.
+* more effective schedule algorithm.

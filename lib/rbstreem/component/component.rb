@@ -24,9 +24,9 @@ module RbStreem
       #     component could yield some computation result
       #   + customer?() with no arugment, this is used to determine whether a
       #     component depend on data from up-stream
-      %w{call dead? ready? producer? customer?}.each do |name|
-        unless agent.respond_to? name
-          raise "Agent must implement #{name} method."
+      %w{call dead? ready? producer? customer?}.each do |method|
+        unless agent.respond_to? method
+          raise "Agent must implement #{method} method."
         end
       end
 
@@ -54,8 +54,9 @@ module RbStreem
     def run
       # FIXME: Take a sample may not be a good schedule algorithm.
       read_pipe = ready_read_pipes.sample
+      write_pipe = @write_pipes[read_pipe.flow_tag]
       result = @agent.call(read_pipe.gets)
-      broadcast(result) unless result.is_a? SkipClass
+      write_pipe.puts(result) unless write_pipe.nil? || result.is_a?(SkipClass)
       result
     end
 
@@ -103,11 +104,11 @@ module RbStreem
     end
 
     def add_read_pipe(pipe)
-      @read_pipes[pipe.name] = pipe
+      @read_pipes[pipe.flow_tag] = pipe
     end
 
     def add_write_pipe(pipe)
-      @write_pipes[pipe.name] = pipe
+      @write_pipes[pipe.flow_tag] = pipe
     end
 
     def remove_read_pipe(name)

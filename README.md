@@ -7,7 +7,7 @@ All of this work are based on [commit 8dba5e8](https://github.com/matz/streem/co
 ## Usage
 
 ```
-$ streem file/to/run.strm
+$ streem file/to/run.strm.rb
 ```
 
 ## Reference

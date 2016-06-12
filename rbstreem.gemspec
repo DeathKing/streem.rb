@@ -4,17 +4,15 @@ Gem::Specification.new do |s|
   s.name        = 'rbstreem'
   s.version     = '0.0.0'
   s.date        = '2016-06-12'
-  s.summary     = "RbStreem"
-  s.description = "RbStreem"
+  s.summary     = "Try to implement matz/streem as a DSL within Ruby with a little syntax sacrifice."
+  s.description = "Try to implement matz/streem as a DSL within Ruby with a little syntax sacrifice."
   s.authors     = ["DeathKing"]
   s.email       = 'deathking0622@gmail.com'
- # s.homepage    =   'http://rubygems.org/gems/hola'
+  s.homepage    = 'https://github.com/DeathKing/streem.rb'
 
-  # If you need to check in files that aren't .rb files, add them here
   s.files        = Dir["{lib}/**/*.rb", "bin/*", "LICENSE", "*.md"]
   s.require_path = 'lib'
 
-  # If you need an executable, add it here
   s.executables = ["streem"]
   s.license       = 'MIT'
 end

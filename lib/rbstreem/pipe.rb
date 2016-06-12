@@ -10,17 +10,21 @@ module RbStreem
       ObjectSpace.each_object(self).find {|obj| obj.name == name}
     end
 
+    def self.generate_pipe_name
+      "pipe-#{SecureRandom.base64(6)}"
+    end
+
     attr_reader :name
     attr_reader :producer, :customer
 
-    attr_accessor :tag
+    attr_accessor :flow_tag
 
-    def initialize(src, dest, tag=nil)
-      @tag = tag.nil? ? SecureRandom.base64(9) : tag
-      @name = SecureRandom.base64(9)
+    def initialize(src, dest, flow_tag)
+      @name = self.class.generate_pipe_name
       @queue = []
       @producer = src
       @customer = dest
+      @flow_tag = flow_tag
       @producer.add_write_pipe(self)
       @customer.add_read_pipe(self)
     end
