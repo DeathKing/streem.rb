@@ -100,7 +100,7 @@ module RbStreem
     end
 
     def avaliable_read_pipes
-      @read_pipes.each_value.reject { |p| p.dead? }
+      @read_pipes.each_value.reject { |p| p.broken? }
     end
 
     def add_read_pipe(pipe)

@@ -1,7 +1,7 @@
 # seq(100) return a stream of numbers from 1 to 100.
 # A function object in pipeline works as a map function.
 # STDOUT is an output destination.
-seq(100).| -> x {
+seq(100).| Component(-> x {
   if x % 15 == 0 
     "FizzBuzz"
   elsif x % 3 == 0 
@@ -11,4 +11,4 @@ seq(100).| -> x {
   else 
     x
   end
-}.| STDOUT
+}).| STDOUT

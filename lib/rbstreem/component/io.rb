@@ -4,7 +4,6 @@ module RbStreem
     def initialize
       @read_pipes = {}
       @write_pipes = {}
-
       add_to_task_queue(self)
     end
   end

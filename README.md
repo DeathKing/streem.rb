@@ -6,9 +6,20 @@ All of this work are based on [commit 8dba5e8](https://github.com/matz/streem/co
 
 ## Usage
 
+You have to build and install gem first:
+
 ```
-$ streem file/to/run.strm.rb
+$ gem build rbstreem.gemspec
+$ gem install rbstreem-<some-version>.gem
 ```
+
+Then you could evaluate RbStreem script by typing:
+
+```
+$ streem [path/to/run.strm.rb]* 
+```
+
+**NOTE**: due to the `require` method, a `rb` suffix is need for a strm script file. A later release will fix this.
 
 ## Reference
 

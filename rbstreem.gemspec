@@ -2,7 +2,7 @@ require File.expand_path("../lib/rbstreem/version", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'rbstreem'
-  s.version     = '0.0.0'
+  s.version     = RbStreem::VERSION
   s.date        = '2016-06-12'
   s.summary     = "Try to implement matz/streem as a DSL within Ruby with a little syntax sacrifice."
   s.description = "Try to implement matz/streem as a DSL within Ruby with a little syntax sacrifice."

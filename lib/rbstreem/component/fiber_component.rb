@@ -1,5 +1,5 @@
 module RbStreem
-  class Component < Fiber
+  class FiberComponent < Fiber
 
     include Connectable
 

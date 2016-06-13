@@ -1,13 +1,13 @@
 require 'colored'
 
-module StreemHelper
+module RbStreem::StreemHelper
 
   def make_agent(method)
     -> obj { obj.send(method) }
   end
 
   def chomps
-    make_agent(:chomp)
+    Component make_agent(:chomp)
   end
 
   def wait(sec = 1)
@@ -20,10 +20,8 @@ module StreemHelper
     end
   end
 
-  SKIP_INSTANCE = RbStreem::SkipClass.new
-
   def skip
-    SKIP_INSTANCE
+    RbStreem::SkipClass.instance
   end
 
   def stringfy
@@ -52,5 +50,5 @@ module StreemHelper
 end
 
 module Kernel
-  include StreemHelper
+  include RbStreem::StreemHelper
 end

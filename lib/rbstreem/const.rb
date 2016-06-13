@@ -1,3 +1,7 @@
+require 'singleton'
+
 module RbStreem
-  SkipClass = Class.new
+  class SkipClass
+    include Singleton
+  end
 end
