@@ -7,7 +7,8 @@ at_exit do
   if ARGV.empty?
     puts "Usage: streem path/to/file"
   else
-    ARGV.each {|file| require File.expand_path(file, Dir.pwd)}
+    #ARGV.each {|file| require File.expand_path(file, Dir.pwd)}
+    require File.expand_path(ARGV.first, Dir.pwd)
     RbStreem::Component.start_schedule
   end
 end

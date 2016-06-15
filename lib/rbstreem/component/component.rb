@@ -54,10 +54,21 @@ module RbStreem
     def run
       # FIXME: Take a sample may not be a good schedule algorithm.
       read_pipe = ready_read_pipes.sample
-      write_pipe = @write_pipes[read_pipe.flow_tag]
-      result = @agent.call(read_pipe.gets)
-      write_pipe.puts(result) unless write_pipe.nil? || result.is_a?(SkipClass)
+      if read_pipe.nil?
+        result = @agent.call(nil)
+        boradcast(result) unless result.is_a?(SkipClass)
+      else
+        write_pipe = @write_pipes[read_pipe.flow_tag]
+        result = @agent.call(read_pipe.gets)
+        write_pipe.puts(result) unless write_pipe.nil? || result.is_a?(SkipClass)
+      end
       result
+    rescue => e
+      puts "Error while run #{name}."
+      puts read_pipes.inspect
+      puts write_pipes.inspect
+      puts @agent.inspect
+      puts e.message
     end
 
     def broadcast(value)
@@ -70,7 +81,7 @@ module RbStreem
       # no read_pipes means the component is a producer, it's ready only depend
       # on the agent's state
       if @read_pipes.empty?
-        @agent.ready?
+        @agent.producer?
       else
         @agent.ready? && !ready_read_pipes.empty?
       end

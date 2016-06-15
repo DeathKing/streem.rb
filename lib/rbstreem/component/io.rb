@@ -11,11 +11,17 @@ module RbStreem
   class StreemIn < StreemIO
     def initialize(source)
       super()
-      @source = source
+      unless source.respond_to? :gets
+        @source = open(source)
+      else
+        @source = source
+      end
     end
 
     def run
-      @source.gets
+      ret = @source.gets
+      broadcast(ret)
+      ret
     end
 
     # In streem.rb level, IO is always ready
@@ -25,7 +31,11 @@ module RbStreem
     end
 
     def dead?
-      false
+      @source.eof?
+    end
+
+    def finalize
+      @source.close unless @source.nil?
     end
   end
 
@@ -33,6 +43,12 @@ module RbStreem
     def initialize(target)
       super()
       @target = target
+    end
+
+    def run
+      ret = ready_read_pipes.sample.gets
+      @target.puts(ret)
+      ret
     end
 
     def ready?
@@ -55,14 +71,6 @@ end
 STDIN = RbStreem::StreemIn.new($stdin)
 STDOUT = RbStreem::StreemOut.new($stdout)
 
-def STDIN.run
-  ret = @source.gets
-  broadcast(ret)
-  ret
-end
-
-def STDOUT.run
-  ret = ready_read_pipes.sample.gets
-  @target.puts(ret)
-  ret
+def STDIN.dead?
+  false
 end

@@ -1,10 +1,10 @@
 # Build a counter closure
-lineno_counter = lambda do |filename|
+def lineno_counter(filename)
   lineno = 0
-  lambda do |str|
+  Component(-> str do
     lineno += 1
     "[#{filename}:#{lineno}] #{str}"
-  end
+  end)
 end
 
 # find combinator
@@ -15,21 +15,23 @@ end
 #              return str
 #          else
 #              return skip
-def_combinator :find do |pattern, color|
-  lambda do |str|
+def find(pattern, color)
+  Component(-> str do
     if str.gsub!(pattern) {|match| match.send(color)}
       str
     else
       skip
     end
-  end
+  end)
 end
 
-Dir.glob("*.txt") do |filename|
-  file(filename).
-    | line_io.
-    | chomps.
+cached = {chomps: chomps,
+          find: find(strm_arg[0], :red)}
+
+Dir.glob("./**/*.rb") do |filename|
+  line_io(filename).
+    | cached[:chomps].
     | lineno_counter(filename).
-    | find(ARGV[0], :red).
+    | cached[:find].
     | STDOUT
 end
