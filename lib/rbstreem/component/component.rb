@@ -3,8 +3,19 @@ module RbStreem
 
     include Connectable
 
-    # This is schedule queue
-    @@tasks = []
+    class << self
+
+      # This is schedule queue
+      @tasks = []
+
+      def task_queue
+        @tasks
+      end
+
+      def add_to_task_queue(comp)
+        @tasks << comp
+      end
+    end
 
     attr_reader :read_pipes
     attr_reader :write_pipes
@@ -12,33 +23,39 @@ module RbStreem
 
     def initialize(agent)
       # Contract Checks
-      # Agent is the actuall code to be excuted when a component running. An
+      # Agent is the actual code to be executed when a component running. An
       # agent must implement following interfaces:
       #   + call() with single argument, this is used when a component been run()
       #   + dead?() with no argument, this is used in schedule algorithm to
-      #     to determine whether a component has already been excuted and have to
+      #     to determine whether a component has already been executed and have to
       #     move it out
       #   + ready?() with no argument, this is used to determine the agent is
       #     ready to run
       #   + producer?() with no argument, this is used to determine whether a
       #     component could yield some computation result
-      #   + customer?() with no arugment, this is used to determine whether a
-      #     component depend on data from up-stream
-      %w{call dead? ready? producer? customer?}.each do |method|
+      %w{call dead? ready? producer?}.each do |method|
         unless agent.respond_to? method
           raise "Agent must implement #{method} method."
         end
       end
 
       @agent = agent
-      @read_pipes = {}
-      @write_pipes = {}
+      @read_pipes = []
+      @write_pipes = []
 
-      add_to_task_queue(self)
+      self.class.add_to_task_queue(self)
+    end
+
+    def finalize
+
     end
 
     def name
       "#<#{self.class.name}:0x#{self.object_id.to_s(16)}>"
+    end
+
+    def check_connection_target_type(_)
+      true
     end
 
     def connection_target
@@ -54,14 +71,10 @@ module RbStreem
     def run
       # FIXME: Take a sample may not be a good schedule algorithm.
       read_pipe = ready_read_pipes.sample
-      if read_pipe.nil?
-        result = @agent.call(nil)
-        boradcast(result) unless result.is_a?(SkipClass)
-      else
-        write_pipe = @write_pipes[read_pipe.flow_tag]
-        result = @agent.call(read_pipe.gets)
-        write_pipe.puts(result) unless write_pipe.nil? || result.is_a?(SkipClass)
-      end
+      flow_tag = read_pipe && read_pipe.flow_tag
+      input = read_pipe && read_pipe.gets
+      result = @agent.call(input)
+      boradcast(result, flow_tag) unless result.is_a?(SkipClass)
       result
     rescue => e
       puts "Error while run #{name}."
@@ -71,8 +84,15 @@ module RbStreem
       puts e.message
     end
 
-    def broadcast(value)
-      @write_pipes.each_value { |p| p.puts(value) }
+    def broadcast(value, flow_tag=nil)
+
+      write_pipes = if flow_tag
+        @write_pipes.select {|p| p.flow_tag == flow_tag}
+      else
+        @write_pipes
+      end
+
+      write_pipes.each {|p| p.puts(value)}
     end
 
     # ready?, blocked? and dead? should be refactored
@@ -80,11 +100,8 @@ module RbStreem
     def ready?
       # no read_pipes means the component is a producer, it's ready only depend
       # on the agent's state
-      if @read_pipes.empty?
-        @agent.producer?
-      else
-        @agent.ready? && !ready_read_pipes.empty?
-      end
+      @agent.ready? &&
+          (@read_pipes.empty? ? @agent.producer? : !ready_read_pipes.empty?)
     end
 
     # In this version, it seems that blocked? has no sense, I just put it here to
@@ -103,48 +120,36 @@ module RbStreem
     # that available, then it goes to dead.
     def dead?
       @agent.dead? ||
-        (!@agent.producer? && avaliable_read_pipes.empty?)
+          (!@agent.producer? && avaliable_read_pipes.empty?)
     end
 
     def ready_read_pipes
-      @read_pipes.each_value.select { |p| p.ready? }
+      @read_pipes.select {|p| p.ready?}
     end
 
     def avaliable_read_pipes
-      @read_pipes.each_value.reject { |p| p.broken? }
+      @read_pipes.reject {|p| p.broken?}
     end
 
     def add_read_pipe(pipe)
-      @read_pipes[pipe.flow_tag] = pipe
+      @read_pipes << pipe
     end
 
     def add_write_pipe(pipe)
-      @write_pipes[pipe.flow_tag] = pipe
+      @write_pipes << pipe
     end
 
-    def remove_read_pipe(name)
-      @read_pipes.delete(name)
+    def remove_read_pipe(flow_tag)
+      @read_pipes.delete_if {|p| p.flow_tag == flow_tag}
     end
 
-    def remove_write_pipe(name)
-      @write_pipes.delete(name)
+    def remove_write_pipe(flow_tag)
+      @write_pipes.delete_if {|p| p.flow_tag == flow_tag}
     end
 
-    def remove_pipe(name)
-      remove_read_pipe(name)
-      remove_write_pipe(name)
-    end
-
-    def self.task_queue
-      @@tasks
-    end
-
-    def task_queue
-      @@tasks
-    end
-
-    def add_to_task_queue(comp)
-      @@tasks << comp
+    def remove_pipe(flow_tag)
+      remove_read_pipe(flow_tag)
+      remove_write_pipe(flow_tag)
     end
 
   end

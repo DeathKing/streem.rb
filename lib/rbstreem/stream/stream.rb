@@ -19,10 +19,6 @@ module RbStreem
     def producer?
       true
     end
-
-    def customer?
-      false
-    end
     
   end
 end

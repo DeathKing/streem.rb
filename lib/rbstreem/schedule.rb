@@ -4,8 +4,7 @@ module RbStreem
     # algorithm to switch between each component, to avoid
     # the situation that we stay in a data-flow too long.
     def self.start_schedule
-      STDIN.write_pipes.empty? && task_queue.delete(STDIN)
-      STDOUT.read_pipes.empty? && task_queue.delete(STDOUT)
+      ready_queue.each {|c| remove_component(c) if c.dead?}
       until task_queue.empty?
         ready_queue = task_queue.select(&:ready?)
         capacity = ready_queue.length + 1

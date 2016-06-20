@@ -1,9 +1,5 @@
 class ArrayContainer < Array
 
-  def customer?
-    false
-  end
-
   def producer?
     true
   end

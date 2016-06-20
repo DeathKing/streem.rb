@@ -19,8 +19,4 @@ class Proc
     false
   end
 
-  def customer?
-    true
-  end
-
 end

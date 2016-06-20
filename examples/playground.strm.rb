@@ -1,5 +1,4 @@
-STDIN.| Component(red).| STDOUT
+cached = {stringfy: stringfy, seq_100: seq(100)}
 
-seq(10).| stringfy.| Component(red).| STDOUT
-seq(10).| Component(-> x {x % 2 == 0 ? skip : x}).
-             | wait(1).| stringfy.| Component(blue) .| STDOUT
+cached[:seq_100].| Component(-> x {x.even? ? skip : x}).| cached[:stringfy].| red.| STDOUT
+cached[:seq_100].| Component(-> y {y.odd? ? skip : y}).| cached[:stringfy].| blue.| STDOUT

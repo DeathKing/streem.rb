@@ -16,7 +16,7 @@ module RbStreem::StreemHelper
 
   Colored::COLORS.each_key do |color|
     define_method(color) do
-      make_agent(color)
+      Component make_agent(color)
     end
   end
 
