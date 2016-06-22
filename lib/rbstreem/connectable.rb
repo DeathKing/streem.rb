@@ -7,9 +7,9 @@ module RbStreem
       target = other.connection_target
       source = self.connection_source
 
-      flow_tag = if other.is_a? pipe
+      flow_tag = if other.is_a? Pipe
                    other.flow_tag
-                 elsif self.is_a? pipe
+                 elsif self.is_a? Pipe
                    self.flow_tag
                  else
                    Pipe.generate_flow_tag

@@ -32,8 +32,8 @@ module RbStreem
       @source = src
       @target = dest
       @flow_tag = flow_tag || self.class.generate_flow_tag
-      @producer.add_write_pipe(self)
-      @customer.add_read_pipe(self)
+      @source.add_write_pipe(self)
+      @target.add_read_pipe(self)
     end
 
     def check_connection_target_type(target)
@@ -41,16 +41,25 @@ module RbStreem
     end
 
     def connection_source
-      source
-    end
-
-    def connection_target
       target
     end
 
+    def connection_target
+      source
+    end
+
+    def be_removed_from_source
+      @source = nil
+    end
+
+    def be_removed_from_target
+      @target = nil
+    end
+
     def broken?
-      target.nil? || target.dead? ||
-          ((source.nil? || source.dead?) && empty?)
+      return true if @broken
+      result = target.nil? || (target.nil? && source.nil?) || (source.nil? && empty?)
+      @broken = result
     end
 
     def puts(val)
@@ -72,6 +81,11 @@ module RbStreem
 
     def ready?
       !empty?
+    end
+
+    def remove_out
+      target && target.remove_read_pipe(self)
+      source && source.remove_write_pipe(self)
     end
 
   end

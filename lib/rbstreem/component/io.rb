@@ -1,10 +1,9 @@
-# Namespace
 module RbStreem
   class StreemIO < Component
     def initialize
-      @read_pipes = {}
-      @write_pipes = {}
-      add_to_task_queue(self)
+      @read_pipes = []
+      @write_pipes = []
+      Component.add_to_task_queue(self)
     end
   end
 
@@ -31,7 +30,7 @@ module RbStreem
     end
 
     def dead?
-      @source.eof? || read_pipes.empty?
+      @source.eof? || write_pipes.empty?
     end
 
     def finalize
@@ -74,3 +73,7 @@ end
 # Override Ruby's default STDIN and STDOUT
 STDIN = RbStreem::StreemIn.new($stdin)
 STDOUT = RbStreem::StreemOut.new($stdout)
+
+def STDIN.dead?
+  write_pipes.empty?
+end

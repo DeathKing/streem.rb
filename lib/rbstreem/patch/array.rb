@@ -1,5 +1,4 @@
-class ArrayContainer < Array
-
+class Array
   def producer?
     true
   end
