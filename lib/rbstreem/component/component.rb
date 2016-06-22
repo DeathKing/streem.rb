@@ -37,18 +37,24 @@ module RbStreem
       def remove_broken_pipe
         pipes.reverse.each do |p|
           p.remove_out if p.broken?
-          pipes.delete(p)
+        end
+      end
+
+      def remove_dead_component
+        task_queue.reverse.each do |c|
+          c.remove_out if c.dead?
         end
       end
 
       def inspect_queue
         puts "=" * 20
-        task_queue.each {|c| puts c.to_s}
+        task_queue.each {|c| puts c.agent.inspect}
         puts "=" * 20
       end
 
     end
 
+    attr_reader :agent
     attr_reader :read_pipes
     attr_reader :write_pipes
 
@@ -106,11 +112,7 @@ module RbStreem
       broadcast(result, flow_tag) unless result.is_a?(SkipClass)
       result
     rescue => e
-      puts "Error while run #{name}."
-      puts read_pipes.inspect
-      puts write_pipes.inspect
-      puts @agent.inspect
-      puts e.message
+      # error handling
     end
 
     def broadcast(value, flow_tag=nil)
@@ -128,8 +130,8 @@ module RbStreem
     def ready?
       # no read_pipes means the component is a producer, it's ready only depend
       # on the agent's state
-      @agent.ready? &&
-          (@read_pipes.empty? ? @agent.producer? : !ready_read_pipes.empty?)
+      @agent.ready? && (@agent.producer? || !ready_read_pipes.empty?)
+          #(@read_pipes.empty? ? @agent.producer? : !ready_read_pipes.empty?)
     end
 
     # In this version, it seems that blocked? has no sense, I just put it here to
@@ -147,7 +149,7 @@ module RbStreem
     # if @agent wait for some input but there's no such read pipe
     # that available, then it goes to dead.
     def dead?
-      return @dead if @dead
+      return true if @dead
       @dead = @agent.dead? || (!@agent.producer? && avaliable_read_pipes.empty?)
     end
 

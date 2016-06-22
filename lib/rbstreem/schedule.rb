@@ -6,10 +6,9 @@ module RbStreem
       # algorithm to switch between each component, to avoid
       # the situation that we stay in a data-flow too long.
       def start_schedule
-        task_queue.each {|c| c.remove_out if c.dead?}
         remove_broken_pipe
+        remove_dead_component
         until task_queue.empty?
-          remove_broken_pipe if should_clean_pipe?
           ready_queue = task_queue.select(&:ready?)
           capacity = ready_queue.length + 1
           schedule_queue = ready_queue.sample rand(capacity)
@@ -19,17 +18,23 @@ module RbStreem
             # after it is done
             begin
               component.run
-              component.dead? && component.remove_out
             rescue => e
-              puts "Error while run #{component}."
+              puts "Error while run #{component}"
               puts e.message
             end
           end
+
+          remove_broken_pipe if should_clean_pipe?
+          remove_dead_component if should_clean_component?
         end
       end
 
       def should_clean_pipe?
         rand(100) < 15
+      end
+
+      def should_clean_component?
+        rand(100) < 20
       end
 
     end

@@ -26,7 +26,7 @@ module RbStreem
     # In streem.rb level, IO is always ready
     # But in Ruby level, IO may not be ready, noticed!
     def ready?
-      true
+      !@source.eof?
     end
 
     def dead?
@@ -76,4 +76,8 @@ STDOUT = RbStreem::StreemOut.new($stdout)
 
 def STDIN.dead?
   write_pipes.empty?
+end
+
+def STDIN.ready?
+  true
 end

@@ -21,6 +21,7 @@ module RbStreem
       end
     end
 
+    attr_reader :queue
     attr_reader :name
     attr_reader :source, :target
 
@@ -86,6 +87,8 @@ module RbStreem
     def remove_out
       target && target.remove_read_pipe(self)
       source && source.remove_write_pipe(self)
+
+      Component.pipes.delete(self)
     end
 
   end
