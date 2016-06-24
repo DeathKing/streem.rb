@@ -4,6 +4,8 @@ Try to implement [matz/streem](https://github.com/matz/streem) as a DSL within R
 
 All of this work are based on [commit 8dba5e8](https://github.com/matz/streem/commit/8dba5e83e4a4e319e1ae4754a1aef455e12b411c).
 
+For more information, please read my blog post [RBSTREEM: A TOY IMPLEMENTATION OF STREEM LANG, OR, ON THE STUDY OF SO-CALLED PIPE-ORIENTED PROGRAMMING](http://deathking.github.io/2016/06/13/rbstreem-a-toy-implementation-of-streem-lang-or-on-the-study-of-so-called-pipe-oriented-programming/).
+
 ## Usage
 
 You have to build and install gem first:
@@ -20,6 +22,13 @@ $ streem [path/to/run.strm.rb]*
 ```
 
 **NOTE**: due to the `require` method, a `rb` suffix is need for a strm script file. A later release will fix this.
+
+## TODO
+
+- [ ] Debugging instrument tool.
+- [ ] Error handling.
+- [ ] Fiber producer.
+- [ ] Topological graph format output.
 
 ## Reference
 

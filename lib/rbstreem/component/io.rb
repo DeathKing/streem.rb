@@ -74,6 +74,8 @@ end
 STDIN = RbStreem::StreemIn.new($stdin)
 STDOUT = RbStreem::StreemOut.new($stdout)
 
+# When we call STDIN.eof? at very beginning, we might get block
+# so we just check weather write_pipes are empty.
 def STDIN.dead?
   write_pipes.empty?
 end
