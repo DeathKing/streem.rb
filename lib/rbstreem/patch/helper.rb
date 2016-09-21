@@ -74,6 +74,10 @@ module RbStreem::StreemHelper
 
   end
 
+  def strm_arg
+    RbStreem::StreemCommand.global.rest_argument
+  end
+
   def error(meg)
     raise msg
   end

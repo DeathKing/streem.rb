@@ -5,11 +5,18 @@ module RbStreem
     attr_reader :script_file
     attr_reader :rest_argument
 
+    @@global = nil
+
+    def self.global
+      @@global
+    end
+
     def initialize(argv)
       @argv = argv
       _, @rest_argument = process_argv
       @script_file = nil
       process_argv
+      @@global = self unless @@global
     end
 
     def process_argv
