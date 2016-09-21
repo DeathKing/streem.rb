@@ -131,7 +131,6 @@ module RbStreem
       # no read_pipes means the component is a producer, it's ready only depend
       # on the agent's state
       @agent.ready? && (@agent.producer? || !ready_read_pipes.empty?)
-          #(@read_pipes.empty? ? @agent.producer? : !ready_read_pipes.empty?)
     end
 
     # In this version, it seems that blocked? has no sense, I just put it here to

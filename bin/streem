@@ -1,14 +1,15 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby -W0
 
 require 'rbstreem'
 include Kernel
 
 at_exit do
-  if ARGV.empty?
-    puts "Usage: streem path/to/file"
+  command = RbStreem::StreemCommand.new(ARGV)
+
+  if command.empty? || !command.script_file
+    puts "usage: streem [options] path/to/streem/script [script_options]"
   else
-    #ARGV.each {|file| require File.expand_path(file, Dir.pwd)}
-    require File.expand_path(ARGV.first, Dir.pwd)
+    require_strm File.expand_path(command.script_file, Dir.pwd)
     RbStreem::Component.start_schedule
   end
 end

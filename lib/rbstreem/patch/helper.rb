@@ -60,17 +60,22 @@ module RbStreem::StreemHelper
     end
   end
 
-  def strm_arg
-    ARGV[1..-1]
-  end
-
-
   def line_io(filename)
     RbStreem::StreemIn.new(filename)
   end
 
   def require_strm(strm_file)
-    require strm_file
+
+    begin
+      require strm_file
+    rescue LoadError => e
+      error "No such file #{strm_file}."
+    end
+
+  end
+
+  def error(meg)
+    raise msg
   end
 
 end
